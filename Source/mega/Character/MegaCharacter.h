@@ -3,20 +3,26 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitySystemInterface.h"
 #include "InputAction.h"
 #include "CoreMinimal.h"
 #include "mega/Interfaces/AnimationInterface.h"
 #include "MegaCharacter.generated.h"
 
+class UAttributeSet;
+class UAbilitySystemComponent;
 class UInputAction;
 class UInputMappingContext;
 
 UCLASS()
-class MEGA_API AMegaCharacter : public ACharacter, public IAnimationInterface {
+class MEGA_API AMegaCharacter : public ACharacter, public IAnimationInterface, public IAbilitySystemInterface {
 	GENERATED_BODY()
 
 public:
 	AMegaCharacter();
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
+
 	void SetWalkState();
 	void SetJogState();
 	void SetCrouchState();
@@ -38,10 +44,10 @@ public:
 	/*
 	 * 
 	 */
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterState")
 	ECharacterState CurrentState = ECharacterState::Jogging;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gate Settings")
 	TMap<ECharacterState, FCharacterSettings> StateSettingsMap;
 
@@ -69,7 +75,6 @@ public:
 	void Look(const FInputActionValue& Value);
 	void StartJumping();
 	virtual void StopJumping() override;
-	
 
 protected:
 	virtual void BeginPlay() override;
@@ -78,4 +83,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> AttributeSet;
 };

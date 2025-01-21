@@ -1,5 +1,6 @@
 #include "MegaCharacter.h"
 
+#include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Components/CapsuleComponent.h"
@@ -7,17 +8,32 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "mega/AbilitySystem/MegaAbilitySystemComponent.h"
+#include "mega/AbilitySystem/MegaAttributeSet.h"
 #include "mega/Interfaces/AnimationInterface.h"
 
 AMegaCharacter::AMegaCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
+
+	AbilitySystemComponent = CreateDefaultSubobject<UMegaAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+	AttributeSet = CreateDefaultSubobject<UMegaAttributeSet>(TEXT("AttributeSet"));
+}
+
+UAbilitySystemComponent* AMegaCharacter::GetAbilitySystemComponent() const {
+	return AbilitySystemComponent;
 }
 
 
 void AMegaCharacter::BeginPlay() {
 	Super::BeginPlay();
-	AddMappingContext();
 	
+	// Initialize Ability System
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	
+	AddMappingContext();
 }
 
 void AMegaCharacter::Tick(float DeltaTime) {
