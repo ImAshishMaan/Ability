@@ -9,6 +9,8 @@
 #include "mega/Interfaces/AnimationInterface.h"
 #include "MegaCharacter.generated.h"
 
+struct FGameplayTag;
+class UMegaInputConfig;
 class UGameplayAbility;
 class UAttributeSet;
 class UAbilitySystemComponent;
@@ -100,4 +102,15 @@ private:
 	 */
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+
+	/*
+	 * Inputs should be in controller class
+	 */
+	void AbilityInputTagPressed(FGameplayTag InputTag);
+	void AbilityInputTagReleased(FGameplayTag InputTag);
+	void AbilityInputTagHeld(FGameplayTag InputTag);
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UMegaInputConfig> InputConfig;
 };

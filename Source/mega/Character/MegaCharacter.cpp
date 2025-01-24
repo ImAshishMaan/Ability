@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "mega/AbilitySystem/MegaAbilitySystemComponent.h"
 #include "mega/AbilitySystem/MegaAttributeSet.h"
+#include "mega/Input/MegaInputComponent.h"
 #include "mega/Interfaces/AnimationInterface.h"
 
 AMegaCharacter::AMegaCharacter() {
@@ -71,11 +72,30 @@ void AMegaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	if(UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMegaCharacter::Move);
+		/*EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMegaCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMegaCharacter::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMegaCharacter::StartJumping);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMegaCharacter::StopJumping);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMegaCharacter::StopJumping);*/
+
+		UMegaInputComponent* AuraInputComponent = CastChecked<UMegaInputComponent>(InputComponent);
+		AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMegaCharacter::Move);
+		AuraInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMegaCharacter::Look);
+		// jumping can be a ability
+		AuraInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMegaCharacter::StartJumping);
+		AuraInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMegaCharacter::StopJumping);
+		
+		AuraInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 	}
+}
+
+void AMegaCharacter::AbilityInputTagPressed(FGameplayTag InputTag) {
+	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+}
+void AMegaCharacter::AbilityInputTagReleased(FGameplayTag InputTag) {
+	GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Blue, *InputTag.ToString());
+}
+void AMegaCharacter::AbilityInputTagHeld(FGameplayTag InputTag) {
+	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Green, *InputTag.ToString());
 }
 
 void AMegaCharacter::SetWalkState() {
@@ -115,8 +135,6 @@ void AMegaCharacter::SetGroundDistance() {
 		}
 	}
 }
-
-
 
 void AMegaCharacter::SetCharacterStates() {
 	FCharacterSettings JoggingSettings;
