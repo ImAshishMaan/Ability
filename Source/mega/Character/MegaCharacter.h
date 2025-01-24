@@ -9,6 +9,7 @@
 #include "mega/Interfaces/AnimationInterface.h"
 #include "MegaCharacter.generated.h"
 
+class UGameplayAbility;
 class UAttributeSet;
 class UAbilitySystemComponent;
 class UInputAction;
@@ -79,6 +80,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	void AddCharacterAbilities();
+
 public:
 	virtual void Tick(float DeltaTime) override;
 
@@ -90,4 +93,11 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+
+	/*
+	 * Ability Array
+	 */
+	UPROPERTY(EditAnywhere, Category = "Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };

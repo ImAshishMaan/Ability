@@ -29,11 +29,17 @@ UAbilitySystemComponent* AMegaCharacter::GetAbilitySystemComponent() const {
 
 void AMegaCharacter::BeginPlay() {
 	Super::BeginPlay();
+	AddMappingContext();
 	
 	// Initialize Ability System
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	AddCharacterAbilities();
+}
+
+void AMegaCharacter::AddCharacterAbilities() {
+	UMegaAbilitySystemComponent* AuraASC = CastChecked<UMegaAbilitySystemComponent>(AbilitySystemComponent);
 	
-	AddMappingContext();
+	AuraASC->AddCharacterAbilities(StartupAbilities);
 }
 
 void AMegaCharacter::Tick(float DeltaTime) {
