@@ -92,10 +92,16 @@ void AMegaCharacter::AbilityInputTagPressed(FGameplayTag InputTag) {
 	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
 }
 void AMegaCharacter::AbilityInputTagReleased(FGameplayTag InputTag) {
-	GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Blue, *InputTag.ToString());
+	//GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Blue, *InputTag.ToString());
+	
+	UMegaAbilitySystemComponent* AuraASC = CastChecked<UMegaAbilitySystemComponent>(AbilitySystemComponent);
+	AuraASC->AbilityInputTagReleased(InputTag);
 }
 void AMegaCharacter::AbilityInputTagHeld(FGameplayTag InputTag) {
-	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Green, *InputTag.ToString());
+	//GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Green, *InputTag.ToString());
+	
+	UMegaAbilitySystemComponent* AuraASC = CastChecked<UMegaAbilitySystemComponent>(AbilitySystemComponent);
+	AuraASC->AbilityInputTagHeld(InputTag);
 }
 
 void AMegaCharacter::SetWalkState() {

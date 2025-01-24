@@ -9,6 +9,7 @@
 #include "mega/Interfaces/AnimationInterface.h"
 #include "MegaCharacter.generated.h"
 
+class UMegaAbilitySystemComponent;
 struct FGameplayTag;
 class UMegaInputConfig;
 class UGameplayAbility;
@@ -113,4 +114,5 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UMegaInputConfig> InputConfig;
+
 };
